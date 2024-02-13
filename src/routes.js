@@ -1,71 +1,26 @@
-const express = require('express');
+const express = require("express");
 const routes = express.Router();
 
-const vetor = [
-    {
-        id: 0,
-        name: "Albert", 
-    },
-    {
-        id: 1,
-        name: "Klaus", 
-    },
-    {
-        id: 2,
-        name: "Leon", 
-    },
-    {
-        id: 3,
-        name: "Arthur Leon", 
-    },
-    {
-        id: 4,
-        name: "Otto", 
-    },
-    {
-        id: 5,
-        name: "Hans", 
-    },
-    {
-        id: 6,
-        name: "Baldur", 
-    },
-]
+const CategoryController = require("./controllers/CategoryController");
+const NoteController = require("./controllers/NoteController");
+const UserController = require("./controllers/UserController");
 
-routes.get('/users', (req, res) => {
-    const query = req.query;
-    console.log(query);
+// Users
+routes.get("/users/:user_id", UserController.getById);
+routes.post("/users", UserController.create);
+routes.put("/users/:user_id", UserController.update);
+routes.delete("/users/:user_id", UserController.delete);
 
-    res.status(200).json(vetor);
-});
+// Category
+routes.post("/category", CategoryController.create);
+routes.get("/category/:category_id", CategoryController.getById);
+routes.put("/category/:category_id", CategoryController.update);
+routes.delete("/category/:category_id", CategoryController.delete);
 
-routes.post('/users', (req, res) => {
-    const newUser = req.body;
-
-    vetor.push(newUser);
-
-    res.status(200).json({ message: "Success" });
-});
-
-routes.put('/users/:userId', (req, res) => {
-    const { userId } = req.params;
-    const newFields = req.body;
-
-    let selectedIndex;
-    let selected = vetor.find((user, index) => {
-        selectedIndex = index;
-        return user.id === userId;
-    });
-    selected = {...selected, ...newFields};
-
-    vetor[selectedIndex] = selected;
-
-    res.status(200).json({ message: "Success" });
-});
-
-routes.post('/home', (req, res) => {
-    console.log(req);
-    res.status(200).send('oi');
-});
+// Note
+routes.post("/note", NoteController.create);
+routes.get("/note/:user_id", NoteController.getByUser);
+routes.put("/note/:note_id", NoteController.update);
+routes.delete("/note/:note_id", NoteController.delete);
 
 module.exports = routes;
