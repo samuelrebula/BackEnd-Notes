@@ -1,6 +1,8 @@
 const express = require("express");
 const routes = express.Router();
 
+const auth = require("./middlewares/authentication");
+
 const CategoryController = require("./controllers/CategoryController");
 const CategoryValidator = require("./validators/CategoryValidator");
 
@@ -10,6 +12,10 @@ const NoteValidator = require("./validators/NoteValidator");
 const UserController = require("./controllers/UserController");
 const UserValidator = require("./validators/UserValidator");
 
+const SessionController = require("./controllers/SessionController");
+
+// Session
+routes.post("/login", SessionController.signIn);
 
 // Users
 routes.get("/users/:user_id", UserValidator.getById, UserController.getById);
@@ -24,9 +30,9 @@ routes.put( "/category/:category_id",  CategoryValidator.update,  CategoryContro
 routes.delete("/category/:category_id",  CategoryValidator.delete,  CategoryController.delete);
 
 // Note
-routes.post("/note", NoteValidator.create, NoteController.create);
-routes.get("/note/:user_id", NoteValidator.getByUser, NoteController.getByUser);
-routes.put("/note/:note_id", NoteValidator.update, NoteController.update);
-routes.delete("/note/:note_id", NoteValidator.delete, NoteController.delete);
+routes.post("/note", NoteValidator.create, auth.authenticateToken, NoteController.create);
+routes.get("/note/:user_id", NoteValidator.getByUser, auth.authenticateToken, NoteController.getByUser);
+routes.put("/note/:note_id", NoteValidator.update, auth.authenticateToken, NoteController.update);
+routes.delete("/note/:note_id", NoteValidator.delete, auth.authenticateToken, NoteController.delete);
 
 module.exports = routes;
