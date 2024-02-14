@@ -1,41 +1,16 @@
 const UserModel = require("../models/UserModel");
-
-const vetor = [
-    {
-        id: 0,
-        name: "Albert", 
-    },
-    {
-        id: 1,
-        name: "Klaus", 
-    },
-    {
-        id: 2,
-        name: "Leon", 
-    },
-    {
-        id: 3,
-        name: "Arthur Leon", 
-    },
-    {
-        id: 4,
-        name: "Otto", 
-    },
-    {
-        id: 5,
-        name: "Hans", 
-    },
-    {
-        id: 6,
-        name: "Baldur", 
-    },
-];
+const Firebase = require("../utils/Firebase");
 
 module.exports = {
     async create(request, response) {
       try {
         const user = request.body;
-  
+        
+        const uid = await Firebase.createNewUser(user.email, user.password);
+
+        delete user.password;
+        user.firebase_id = uid;
+
         const result = await UserModel.create(user);
         return response.status(200).json({ user_id: result });
       } catch (err) {
